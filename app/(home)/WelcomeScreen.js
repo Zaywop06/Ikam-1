@@ -2,11 +2,18 @@ import React from 'react';
 import { View, Text, SafeAreaView, Pressable, Image, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import colorsIkam from '../assets/estilos';
+import { useFonts } from 'expo-font';
 
 const WelcomeScreen = () => {
   const handleLogin = () => {
     // Implement login logic here    
   };
+
+  const fontsLoading = useFonts({
+    Space:require('../assets/fonts/SpaceMono-Regular.ttf'),
+    SansItalic:require('../assets/fonts/PlusJakartaSans-Italic-VariableFont_wght.ttf'),
+    SansVar:require('../assets/fonts/PlusJakartaSans-VariableFont_wght.ttf'),
+  });
 
   const ruta = useRouter();
 
@@ -51,26 +58,25 @@ const estilos = StyleSheet.create({
   contenedorTitulo: {
     padding: 30
   },
-  tituloGen: {
-    fontStyle: 'italic',
+  tituloGen: {    
+    fontFamily: 'SansVar',    
     textAlign: 'center',
   },
   titulo: {
-    fontSize: 45,
+    fontSize: 40,
     fontWeight: 'bold',
     ...colorsIkam.azulTex
   },
   subtitulo: {
-    fontSize: 35,
+    fontSize: 30,
     fontWeight: '900'
 
   },
   label: {
-    fontSize: 25,
+    fontSize: 15,
   },
   contenedorImg: {
     padding: 20
-
   },
   imagen: {    
     width: 400,
@@ -81,7 +87,7 @@ const estilos = StyleSheet.create({
     padding: 5
   },
   labelBtn:{
-    fontSize: 25,
+    fontSize: 20,
     fontStyle: 'native',
     ...colorsIkam.rojoTex    
   },
@@ -90,10 +96,10 @@ const estilos = StyleSheet.create({
     marginBottom: 20,
     borderRadius: 40,
 
-    ...colorsIkam.azul
+    ...colorsIkam.cian
   },
   btnText: {
-    fontSize: 30,
+    fontSize: 20,
     color: 'white',    
   }
 });

@@ -28,7 +28,7 @@ const LoginScreen = () => {
             style={styles.logo} />
           <View style={styles.header}>
             <Text style={styles.title}>
-              Inicia sesion <Text style={{ color: '#075eec' }}></Text>
+              Registrate
             </Text>
           </View>
 
@@ -47,7 +47,6 @@ const LoginScreen = () => {
                 value={form.email} />
             </View>
             <View style={styles.input}>
-
               <TextInput
                 autoCapitalize="none"
                 autoCorrect={false}
@@ -59,7 +58,19 @@ const LoginScreen = () => {
                 style={styles.inputControl}
                 value={form.password} />
             </View>
-            <Text style={styles.formLink}>¿Has olvidado tu contraseña?</Text>
+            <View style={styles.input}>
+              <TextInput
+                autoCapitalize="none"
+                autoCorrect={false}
+                clearButtonMode="while-editing"
+                keyboardType="visible-password"
+                onChangeText={password => setForm({ ...form, password })}
+                placeholder="Confirmar contraseña"
+                placeholderTextColor="#6b7280"
+                style={styles.inputControl}
+                value={form.password} />
+            </View>
+            <Text style={styles.formLink}>Registrarse con numero telefonico</Text>
 
             <View style={styles.formAction}>
               <TouchableOpacity
@@ -67,11 +78,9 @@ const LoginScreen = () => {
                   // handle onPress
                 }}>
                 <View style={styles.btnContain}>
-                  <Link href={'(tabs)'}>
                   <View style={styles.btn}>
-                    <Text style={styles.btnText}>Ingresar</Text>
+                    <Text style={styles.btnText}>Registrar</Text>
                   </View>
-                  </Link>
                 </View>
 
               </TouchableOpacity>
@@ -112,7 +121,7 @@ const LoginScreen = () => {
             <View style={styles.input}>
             </View>
             <Text style={styles.label}>
-              ¿No tienes cuenta? <Link href={'RegisterScreen'} style={styles.labelLink}>Registrate en IKAM</Link> 
+              ¿Ya tienes una cuenta? <Link href={'LoginScreen'} style={styles.labelLink}>Inicia en IKAM</Link>
             </Text>
           </View>
         </ScrollView>
@@ -123,7 +132,7 @@ const LoginScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 40,
+    paddingVertical: 30,
     paddingHorizontal: 20,
     flexGrow: 1,
     flexShrink: 1,
@@ -135,7 +144,7 @@ const styles = StyleSheet.create({
   labelLink: {
     textAlign: 'center',
     color: 'blue'
-  },  
+  },
   title: {
     fontSize: 30,
     fontWeight: '700',
@@ -237,7 +246,7 @@ const styles = StyleSheet.create({
   },
 
   /** Button */
-  btnContain:{
+  btnContain: {
     alignItems: 'center',
   },
   btn: {
