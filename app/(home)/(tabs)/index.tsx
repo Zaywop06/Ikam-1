@@ -7,11 +7,14 @@ import {
   Image,
   StyleSheet,
   TextInput,
+  TextInputComponent,
   FlatList,
   Text,
   TouchableOpacity,
   Dimensions,
+  Modal
 } from "react-native";
+import DropDownPicker from 'react-native-dropdown-picker';
 
 const { width } = Dimensions.get("window");
 
@@ -20,25 +23,37 @@ import { FontAwesome5 } from "@expo/vector-icons";
 // import Logo from '../../assets/img/tienda.jpg';
 
 import { getFirestore, collection, getDocs } from "firebase/firestore";
+// Base de mi compa el pelon
 import { app } from "../../firebase/config";
+// Base de esos jotos
 import { ikam } from "../../firebase/config-ikam";
 const db = getFirestore(app);
 
 const App = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [categorias, setCategorias] = useState([]);
-  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
   const [pymes, setPymes] = useState([]);
+  const [pymesQ, setPymesQ] = useState([]);
+  const [busquedaPyme, setbusquedaPyme] = useState(String);
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
   const [pymeSeleccionada, setPymeSeleccionada] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false)
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
+  const [items, setItems] = useState([
+    { label: 'Todas las colonias', value: '' },
+    { label: 'Aragón 2da. Sección', value: 'Aragón 2da. Sección' },
+    { label: 'Aragón 1ra. Sección', value: 'Aragón 1ra. Sección' },
+  ]);
 
-  const obtenerCategorias = async () => {
-    const querySnapshot = await getDocs(collection(db, "categorias"));
-    const categoriasArray = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    setCategorias(categoriasArray);
-  };
+  // const obtenerCategorias = async () => {
+  //   const querySnapshot = await getDocs(collection(db, "categorias"));
+  //   const categoriasArray = querySnapshot.docs.map((doc) => ({
+  //     id: doc.id,
+  //     ...doc.data(),
+  //   }));
+  //   setCategorias(categoriasArray);
+  // };
 
   const obtenerPymes = async () => {
     const querySnapshot = await getDocs(collection(ikam, "pyme"));
@@ -50,7 +65,34 @@ const App = () => {
   };
 
   useEffect(() => {
-    obtenerCategorias();
+    if (pymes) {
+      setPymesQ(pymes);
+    }
+
+    if (busquedaPyme) {
+      const pyme = pymesQ.filter(p =>
+        p.nombre_pyme.toLowerCase().includes(busquedaPyme.toLowerCase())
+      );
+      setPymesQ(pyme);
+    }
+  }, [pymes, busquedaPyme])
+  
+  useEffect(() => {
+    if (value) {      
+      const pyme = pymes.filter(p =>
+        p.coloniaPyme && typeof p.coloniaPyme === 'string' && p.coloniaPyme.includes(value)
+      );
+      setPymesQ(pyme);
+    }
+
+    if (!value) {            
+      setPymesQ(pymes);
+    }
+  }, [value])
+
+
+  useEffect(() => {
+    // obtenerCategorias();
     obtenerPymes();
   }, []);
 
@@ -69,30 +111,35 @@ const App = () => {
     setPymeSeleccionada(pymeId);
   };
 
-  const renderizarItemCategoria = ({ item }) => (
-    <TouchableOpacity
-      style={[
-        estilos.categoria,
-        categoriaSeleccionada === item.id && estilos.categoriaSeleccionada,
-      ]}
-      onPress={() => manejarCategoriaPresionada(item.id)}
-    >
-      <FontAwesome5
-        name={item.icono}
-        size={24}
-        color={categoriaSeleccionada === item.id ? "#000" : "#888"}
-      />
-      <Text
-        style={[
-          estilos.textoCategoria,
-          categoriaSeleccionada === item.id &&
-          estilos.textoCategoriaSeleccionada,
-        ]}
-      >
-        {item.nombre}
-      </Text>
-    </TouchableOpacity>
-  );
+  const renderizarItemCategoria = ({ item }) => {
+    if (item.categoriaPyme != null) {
+      return (
+        <TouchableOpacity
+          style={
+            [
+              estilos.categoria,
+              categoriaSeleccionada === item.id && estilos.categoriaSeleccionada,
+            ]}
+          onPress={() => manejarCategoriaPresionada(item.id)}
+        >
+          <FontAwesome5
+            name="pizza-slice"
+            size={24}
+            color={categoriaSeleccionada === item.id ? "#000" : "#888"}
+          />
+          <Text
+            style={[
+              estilos.textoCategoria,
+              categoriaSeleccionada === item.id &&
+              estilos.textoCategoriaSeleccionada,
+            ]}
+          >
+            {item.categoriaPyme}
+          </Text>
+        </TouchableOpacity >
+      )
+    }
+  };
 
   const renderizarItemPyme = ({ item }) => (
     <TouchableOpacity
@@ -115,48 +162,168 @@ const App = () => {
           style={estilos.logo}
         />
       </View>
-        <View style={estilos.barraBusqueda}>
+      <View style={estilos.barraBusqueda}>
+        <FontAwesome5
+          name="search"
+          size={25}
+          color="#222C57"
+          style={estilos.iconoBusqueda}
+        />
+        <TextInput
+          style={estilos.entradaBusqueda}
+          placeholder="¿Qué lugar es de tu interés?"
+          placeholderTextColor="#222C57"
+          value={busquedaPyme}
+          onChangeText={setbusquedaPyme}
+        />
+        {busquedaPyme &&
           <FontAwesome5
-            name="search"
-            size={18}
-            color="#888"
+            name="times"
+            size={25}
+            color="#C61919"
             style={estilos.iconoBusqueda}
+            onPress={() => {
+              setbusquedaPyme("");
+            }}
           />
-          <TextInput
-            style={estilos.entradaBusqueda}
-            placeholder="¿Qué lugar es de tu interés?"
-            placeholderTextColor="#888"
-          />
-        </View>
+        }
+        <FontAwesome5
+          name="filter"
+          size={25}
+          color="#222C57"
+          style={estilos.iconoBusqueda}
+          onPress={() => {            
+            setModalVisible(true);
+          }}
+        />
+      </View>
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
         <View style={estilos.contenedorCategorias}>
-          <FlatList
-            data={categorias}
-            renderItem={renderizarItemCategoria}
-            keyExtractor={(item) => item.id}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={estilos.listaCategorias}
-          />
+          <View style={estilos.listaCategorias}>
+            <FontAwesome5
+              name="angle-left"
+              size={25}
+              color="#C61919"
+              style={estilos.iconoCategoria}
+              onPress={() => {                
+              }}
+            />
+            <FlatList
+              data={pymesQ}
+              renderItem={renderizarItemCategoria}
+              keyExtractor={(item) => item.id}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+            // contentContainerStyle={}
+            />
+            <FontAwesome5
+              name="angle-right"
+              size={25}
+              color="#C61919"
+              style={estilos.iconoCategoria}
+              onPress={() => {
+                console.log("HOla perro");
+              }}
+            />
+          </View>
         </View>
         <View style={estilos.contenedorPymes}>
           <FlatList
-            data={pymes}
+            data={pymesQ}
             renderItem={renderizarItemPyme}
             keyExtractor={(item) => item.id}
             contentContainerStyle={estilos.listaPymes}
           />
         </View>
+
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(!modalVisible)}
+        >
+          <View style={estilos.modalBackground}>
+            <View style={estilos.modalView}>
+              <Text style={estilos.modalText}>Busca en la ciudad de tu agrado</Text>
+
+
+              <View >
+                <Text style={estilos.modalTextDrop}>Colonia</Text>
+                <DropDownPicker
+                  open={open}
+                  value={value}
+                  items={items}
+                  setOpen={setOpen}
+                  setValue={setValue}
+                  setItems={setItems}
+                  placeholder="Selecciona una colonia"
+                />                
+              </View>
+
+              <TouchableOpacity
+                style={[estilos.button, estilos.buttonClose]}
+                onPress={() => setModalVisible(!modalVisible)}
+              >
+                <Text style={estilos.textStyle}>Aceptar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
       </ScrollView>
     </SafeAreaView>
   );
 };
 
 const estilos = StyleSheet.create({
+
+  textStyle: {
+    color: 'black',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalView: {
+    width: '80%',
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 20,
+    elevation: 2,
+  },
+  buttonClose: {
+    marginTop:35,
+    backgroundColor: '#41DFD1',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    fontSize: 25
+  },
+  modalTextDrop: {
+    fontSize: 20
+  },
   areaSegura: {
     flex: 1,
     backgroundColor: "#F0F0F0",
@@ -192,10 +359,17 @@ const estilos = StyleSheet.create({
   },
   iconoBusqueda: {
     marginRight: 10,
+    marginLeft: 10,
+  },
+  iconoCategoria: {
+    marginTop: 20,
+    marginRight: 10,
+    marginLeft: 10,
   },
   entradaBusqueda: {
     flex: 1,
     fontSize: 16,
+    textAlign: "center"
   },
   contenedorCategorias: {
     paddingHorizontal: 10,
