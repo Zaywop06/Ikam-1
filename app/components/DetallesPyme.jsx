@@ -70,9 +70,13 @@ export default VistaDetallesPyme = ({ pymeId, volver, obtenerDetallesPyme }) => 
                                 style={estilos.imagenDetalle}
                             />
                             <Image
-                                source={{ uri: pyme.imagen1 }}
+                                source={{ uri: pyme.imagen4 }}
                                 style={estilos.imagenDetalle}
-                            />                            
+                            />
+                            <Image
+                                source={{ uri: pyme.imagen5 }}
+                                style={estilos.imagenDetalle}
+                            />
                         </Carousel>
                         <View style={estilos.botonesContenedor}>
                             <TouchableOpacity style={estilos.botonIzquierda} onPress={volver}>
@@ -83,11 +87,14 @@ export default VistaDetallesPyme = ({ pymeId, volver, obtenerDetallesPyme }) => 
                             </TouchableOpacity>
                         </View>
                     </View>
-                    <ScrollView contentContainerStyle={estilos.scrollViewContent}>
+                    <ScrollView >
                         <View style={estilos.detalleContenedor}>
                             <Text style={estilos.tituloDetalle}>{pyme.nombre_pyme}</Text>
                             <Text style={estilos.categoriaDetalle}>
-                                {pyme.categoriaPyme ? pyme.categoriaPyme : "Sin categoría"}
+                                {pyme.nombreSubcate ? pyme.nombreSubcate : "Sin categoría"}
+                            </Text>
+                            <Text style={estilos.descripcionTitulo}>
+                                {pyme.descripcion}
                             </Text>
                             <TouchableOpacity onPress={() => abrirEnNavegador(pyme.url_maps)}>
                                 <View style={estilos.descripcionContenedor}>
@@ -119,10 +126,10 @@ export default VistaDetallesPyme = ({ pymeId, volver, obtenerDetallesPyme }) => 
                                 <View style={estilos.textoContenedor}>
                                     <Text style={estilos.descripcionTitulo}>Llámanos al</Text>
                                     <Text style={estilos.descripcionDetalle}>
-                                        {pyme.numero_local}
+                                        {pyme.num_local}
                                     </Text>
                                     <Text style={estilos.descripcionDetalle}>
-                                        {pyme.numero_cel}
+                                        {pyme.num_cel}
                                     </Text>
                                 </View>
                             </TouchableOpacity>
@@ -185,9 +192,14 @@ export default VistaDetallesPyme = ({ pymeId, volver, obtenerDetallesPyme }) => 
 };
 
 const estilos = StyleSheet.create({
+    areaSegura: {
+        flex: 1,
+        backgroundColor: "#F0F0F0",
+    },
     // Detalles de PyME
     detalleContenedor: {
-        flex: 1,
+        // flex: 1,
+        height: "auto",
         padding: 20,
         backgroundColor: "#FFFFFF",
     },
@@ -226,8 +238,10 @@ const estilos = StyleSheet.create({
     tituloDetalle: {
         fontSize: 22,
         fontWeight: "bold",
+        textAlign: "center"
     },
     categoriaDetalle: {
+        textAlign: "right",
         fontSize: 18,
         paddingBottom: 15,
         borderBottomWidth: 1,
@@ -282,71 +296,4 @@ const estilos = StyleSheet.create({
         marginHorizontal: 10,
     },
 
-    // Modal
-    modalBackground: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "rgba(0,0,0,0.5)",
-    },
-    modalView: {
-        width: "80%",
-        backgroundColor: "white",
-        borderRadius: 20,
-        padding: 35,
-        alignItems: "center",
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
-    },
-    button: {
-        borderRadius: 20,
-        padding: 20,
-        elevation: 2,
-    },
-    buttonClose: {
-        marginTop: 35,
-        backgroundColor: "#41DFD1",
-    },
-    modalText: {
-        marginBottom: 15,
-        textAlign: "center",
-        fontSize: 25,
-    },
-    modalTextDrop: {
-        fontSize: 20,
-    },
-    textStyle: {
-        color: "black",
-        fontWeight: "bold",
-        textAlign: "center",
-    },
-
-
-    slide1: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#a3c9a8"
-    },
-    slide2: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#84b59f"
-    },
-    slide3: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#69a297"
-    },
-    text: {
-        color: "#1f2d3d",
-        opacity: 0.7,
-        fontSize: 48,
-        fontWeight: "bold"
-    }
 });

@@ -29,7 +29,10 @@ const BarraBusqueda = ({ busquedaPyme, setbusquedaPyme, setModalVisible }) => {
                 size={25}
                 color="#222C57"
                 style={estilos.iconoFiltro}
-                onPress={() => setModalVisible(true)}
+                onPress={() => {
+                    setModalVisible(true)
+                    setbusquedaPyme("")
+                }}
             />
         </View>
     )

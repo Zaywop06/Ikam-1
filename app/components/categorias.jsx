@@ -9,7 +9,7 @@ export default ListaCategorias = ({ categoriaSeleccionada, setCategoriaSeleccion
 
 
     const renderizarItemCategoria = ({ item }) => {
-        if (item.categoriaPyme != null) {
+        if (item.nombreCategoria != null) {
             return (
                 <TouchableOpacity
                     style={
@@ -19,7 +19,7 @@ export default ListaCategorias = ({ categoriaSeleccionada, setCategoriaSeleccion
                         ]}
                     onPress={() => {                        
                         manejarCategoriaPresionada(item.id)
-                        setCategoriasElegir(item.subcatPyme)
+                        setCategoriasElegir(item.nombreSubcate)
 
                     }}
                 >
@@ -35,7 +35,7 @@ export default ListaCategorias = ({ categoriaSeleccionada, setCategoriaSeleccion
                             estilos.textoCategoriaSeleccionada,
                         ]}
                     >
-                        {item.subcatPyme}
+                        {item.nombreSubcate}
                     </Text>
                 </TouchableOpacity >
             )

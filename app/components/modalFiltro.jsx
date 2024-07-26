@@ -8,8 +8,8 @@ const ModalFiltro = ({ modalVisible, setModalVisible, colonia, setColonia }) => 
     const [open, setOpen] = useState(false);    
     const [colonias, setcolonias] = useState([
         { label: 'Todas las colonias', value: '' },
-        { label: 'Aragón 2da. Sección', value: 'Aragón 2da. Sección' },
-        { label: 'Aragón 1ra. Sección', value: 'Aragón 1ra. Sección' },
+        { label: 'Aragón 2da. Sección', value: 'Aragón 2da Sección' },
+        { label: 'Aragón 1ra. Sección', value: 'Aragón 1ra Sección' },
     ]);
 
     return (
