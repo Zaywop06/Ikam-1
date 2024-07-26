@@ -58,23 +58,23 @@ export default VistaDetallesPyme = ({ pymeId, volver, obtenerDetallesPyme }) => 
                     <View style={estilos.imagenContenedor}>
                         <Carousel>
                             <Image
-                                source={{ uri: pyme.imagen1 }}
+                                source={{ uri: pyme.imagen1}}
                                 style={estilos.imagenDetalle}
                             />
                             <Image
-                                source={{ uri: pyme.imagen2 }}
+                                source={{ uri: pyme.imagen2}}
                                 style={estilos.imagenDetalle}
                             />
                             <Image
-                                source={{ uri: pyme.imagen3 }}
+                                source={{ uri: pyme.imagen3}}
                                 style={estilos.imagenDetalle}
                             />
                             <Image
-                                source={{ uri: pyme.imagen4 }}
+                                source={{ uri: pyme.imagen4}}
                                 style={estilos.imagenDetalle}
                             />
                             <Image
-                                source={{ uri: pyme.imagen5 }}
+                                source={{ uri: pyme.imagen5}}
                                 style={estilos.imagenDetalle}
                             />
                         </Carousel>

@@ -17,14 +17,11 @@ import VistaDetallesPyme from '../../components/DetallesPyme';
 import BarraBusqueda from '../../components/barraBusqueda';
 import ListaCategorias from '../../components/categorias';
 import ModalFiltro from '../../components/modalFiltro';
-import ListaPymes from '../../components/pymes';
-
 import { ikam } from "../../firebase/config-ikam";
+import ListaPymes from '../../components/pymes';
 import { app } from "../../firebase/config";
 
 const { width } = Dimensions.get("window");
-
-
 const db = getFirestore(app);
 
 const App = () => {
