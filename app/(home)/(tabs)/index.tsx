@@ -10,10 +10,12 @@ import {
     Dimensions,
     SafeAreaView,
     BackHandler,
-    Alert
+    Alert,
+    StatusBar
 } from "react-native";
 import { getFirestore, collection, getDocs, doc, getDoc } from "firebase/firestore";
 import VistaDetallesPyme from '../../components/DetallesPyme';
+import VistaDetallesPymeMod from '../../components/DetallesPymeModal';
 import BarraBusqueda from '../../components/barraBusqueda';
 import ListaCategorias from '../../components/categorias';
 import ModalFiltro from '../../components/modalFiltro';
@@ -31,6 +33,7 @@ const App = () => {
     const [categoriasElegir, setCategoriasElegir] = useState([]);
     const [vistaDetalles, setVistaDetalles] = useState(false);
     const [busquedaPyme, setbusquedaPyme] = useState(String);
+    // const [modalVisiblePy, setModalVisiblePy] = useState(false)
     const [modalVisible, setModalVisible] = useState(false)
     const [refreshing, setRefreshing] = useState(false);
     const [categorias, setCategorias] = useState([]);
@@ -182,14 +185,14 @@ const App = () => {
         }
     };
 
-    if (vistaDetalles) {
-        return (
-            <VistaDetallesPyme
-                pymeId={pymeSeleccionada}
-                volver={() => setVistaDetalles(false)}
-                obtenerDetallesPyme={obtenerDetallesPyme} />
-        );
-    }
+    // if (vistaDetalles) {
+    //     return (
+    //         <VistaDetallesPyme
+    //             pymeId={pymeSeleccionada}
+    //             volver={() => setVistaDetalles(false)}
+    //             obtenerDetallesPyme={obtenerDetallesPyme} />
+    //     );
+    // }
 
     return (
         <SafeAreaView style={estilos.areaSegura}>
@@ -248,6 +251,13 @@ const App = () => {
                     setModalVisible={setModalVisible}
                     colonia={colonia}
                     setColonia={setColonia}
+                />
+                <VistaDetallesPymeMod
+                    pymeId={pymeSeleccionada}
+                    volver={() => setVistaDetalles(false)}
+                    obtenerDetallesPyme={obtenerDetallesPyme}
+                    vistaDetalles={vistaDetalles}
+                    setVistaDetalles={setVistaDetalles}
                 />
             </ScrollView>
         </SafeAreaView>

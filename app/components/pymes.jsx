@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import { TouchableOpacity, Image, View, Text, FlatList, StyleSheet, Dimensions } from "react-native";
+import { TouchableOpacity, Image, View, Text, FlatList, StyleSheet, Dimensions, StatusBar } from "react-native";
 const { width: viewportWidth } = Dimensions.get("window");
 
 export default ListaPymes = ({ setPymeSeleccionada, pymesQ, setVistaDetalles }) => {
 
     const manejarPymePresionada = (pymeId) => {
         setPymeSeleccionada(pymeId);
+        // StatusBar.setHidden(true);
         setVistaDetalles(true);
     };
 

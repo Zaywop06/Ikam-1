@@ -1,26 +1,32 @@
 import React from 'react';
-import { View, Text, SafeAreaView, Pressable, Image, StyleSheet } from 'react-native';
+import { View, Text, SafeAreaView, Pressable, Image, StyleSheet, Dimensions } from 'react-native';
 import { useRouter } from 'expo-router';
 import colorsIkam from '../assets/estilos';
 import { useFonts } from 'expo-font';
+
+const { width, height } = Dimensions.get('window');
 
 const WelcomeScreen = () => {
   const handleLogin = () => {
     // Implement login logic here    
   };
 
-  const fontsLoading = useFonts({
-    Space:require('../assets/fonts/SpaceMono-Regular.ttf'),
-    SansItalic:require('../assets/fonts/PlusJakartaSans-Italic-VariableFont_wght.ttf'),
-    SansVar:require('../assets/fonts/PlusJakartaSans-VariableFont_wght.ttf'),
+  const [fontsLoaded] = useFonts({
+    Space: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    SansItalic: require('../assets/fonts/PlusJakartaSans-Italic-VariableFont_wght.ttf'),
+    SansVar: require('../assets/fonts/PlusJakartaSans-VariableFont_wght.ttf'),
   });
 
   const ruta = useRouter();
 
+  if (!fontsLoaded) {
+    return null; // You can add a loading indicator here
+  }
+
   return (
     <SafeAreaView style={estilos.container}>
       <View style={estilos.contenedorTitulo}>
-        <Text style={[estilos.tituloGen, estilos.titulo]}>Bievenido a</Text>
+        <Text style={[estilos.tituloGen, estilos.titulo]}>Bienvenido a</Text>
         <Text style={[estilos.tituloGen, estilos.subtitulo]}>IKAM Multitiendas</Text>
         <Text style={[estilos.tituloGen, estilos.label]}>Todo lo que buscas, a tu alcance</Text>
       </View>
@@ -31,7 +37,7 @@ const WelcomeScreen = () => {
         />
       </View>
       <View style={estilos.contenedorTitulo}>
-        <Text style={[estilos.tituloGen, estilos.labelBtn]}>"Tu exito es nuestro objetivo"</Text>
+        <Text style={[estilos.tituloGen, estilos.labelBtn]}>"Tu éxito es nuestro objetivo"</Text>
       </View>
       <View style={estilos.contenedorBtn}>
         <Pressable
@@ -39,11 +45,10 @@ const WelcomeScreen = () => {
           style={estilos.btn}
           onPress={() => ruta.push('/LoginScreen')}
         >
-          <Text style={estilos.btnText}>Comieza YA</Text>
+          <Text style={estilos.btnText}>Comienza YA</Text>
         </Pressable>        
       </View>
     </SafeAreaView>
-
   );
 }
 
@@ -53,55 +58,62 @@ const estilos = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 10,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
   contenedorTitulo: {
-    padding: 30
+    paddingVertical: 20,
+    paddingHorizontal: 10,
   },
-  tituloGen: {    
-    fontFamily: 'SansVar',    
+  tituloGen: {
+    fontFamily: 'SansVar',
     textAlign: 'center',
   },
   titulo: {
-    fontSize: 40,
+    fontSize: width * 0.1,
     fontWeight: 'bold',
-    ...colorsIkam.azulTex
+    color: colorsIkam.azulTex.color,
+    marginBottom: 10,
   },
   subtitulo: {
-    fontSize: 30,
-    fontWeight: '900'
-
+    fontSize: width * 0.075,
+    fontWeight: '900',
+    marginBottom: 10,
   },
   label: {
-    fontSize: 15,
+    fontSize: width * 0.04,
+    marginBottom: 20,
   },
   contenedorImg: {
-    padding: 20
+    padding: 10,
+    alignItems: 'center',
   },
-  imagen: {    
-    width: 400,
-    height: 400,
-
+  imagen: {
+    width: width * 0.9,
+    height: width * 0.9,
+    resizeMode: 'contain',
   },
   contenedorBtn: {
-    padding: 5
+    padding: 20,
+    width: '100%',
+    alignItems: 'center',
   },
-  labelBtn:{
-    fontSize: 20,
-    fontStyle: 'native',
-    ...colorsIkam.rojoTex    
-  },
-  btn: {    
-    padding: 15,    
+  labelBtn: {
+    fontSize: width * 0.05,
+    fontStyle: 'italic',
+    color: colorsIkam.rojoTex.color,
     marginBottom: 20,
+  },
+  btn: {
+    width: '80%',
+    padding: 15,
     borderRadius: 40,
-
-    ...colorsIkam.cian
+    backgroundColor: colorsIkam.cian.backgroundColor,
+    alignItems: 'center',
   },
   btnText: {
-    fontSize: 20,
-    color: 'white',    
-  }
+    fontSize: width * 0.05,
+    color: 'white',
+  },
 });
 
 export default WelcomeScreen;

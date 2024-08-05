@@ -3,12 +3,12 @@
 
 // // Configuración de Firebase para la segunda base de datos
 // const firebaseConfig2 = {
-//   apiKey: "AIzaSyAmSpbAf6_eXTHSHpxxil4iZQf88oBDhcY",
-//   projectId: "ikam-multitiendas",
-//   storageBucket: "ikam-multitiendas.appspot.com",
-//   authDomain: "ikam-multitiendas.firebaseapp.com",
+//   apiKey: "AIzaSyB-Sm38xUlEJRRS4cB0MKjSjCI_uzRhoE8",
+//   projectId: "ikamultitiendas",
+//   storageBucket: "ikamultitiendas.appspot.com",
+//   authDomain: "ikamultitiendas.firebaseapp.com",
 //   // messagingSenderId: "1035183332106",
-//   appId: "1:877233063554:android:0219882b1e3043f5cf969b"
+//   appId: "1:844394495235:android:34bf6cd669fe2b7d487d36"
 //   // measurementId: "G-MLPG9FYYD8"
 // };
 

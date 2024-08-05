@@ -1,4 +1,4 @@
-import { Modal, Text, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { Modal, Text, TouchableOpacity, View, StyleSheet, StatusBar } from 'react-native';
 import {useState} from 'react';
 
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -14,10 +14,13 @@ const ModalFiltro = ({ modalVisible, setModalVisible, colonia, setColonia }) => 
 
     return (
         <Modal
-            animationType="fade"
+            animationType="slide"
             transparent={true}
             visible={modalVisible}
-            onRequestClose={() => setModalVisible(!modalVisible)}
+            onRequestClose={() => {
+                setModalVisible(!modalVisible)
+                StatusBar.setHidden(false);
+            }}
         >
             <View style={estilos.modalBackground}>
                 <View style={estilos.modalView}>
