@@ -127,10 +127,10 @@ export default function App() {
           :
           <View style={styles.contenedorNF}>
             <Text style={styles.noEncontrado}>
-              ¡Lo sentimos!
+              ¡No tienes favoritos!
             </Text>
             <Text style={styles.noEncontrado}>
-              Contenido no encontrado
+              Añade algunos
             </Text>
             <Image
               source={require("../../assets/img/abuNotFound.png")}
