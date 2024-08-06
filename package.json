@@ -34,7 +34,6 @@
     "expo-video-thumbnails": "~8.0.0",
     "expo-web-browser": "~13.0.3",
     "firebase": "^10.12.5",
-    "ikam": "file:",
     "pinar": "^0.12.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
