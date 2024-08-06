@@ -21,6 +21,10 @@ import ListaCategorias from '../../components/categorias';
 import ModalFiltro from '../../components/modalFiltro';
 import { ikam } from "../../firebase/config-ikam";
 import ListaPymes from '../../components/pymes';
+import { app } from "../../firebase/config";
+
+const { width } = Dimensions.get("window");
+const db = getFirestore(app);
 
 const App = () => {
     // Hooks
@@ -49,7 +53,7 @@ const App = () => {
     //     ...doc.data(),
     //   }));
     //   setCategorias(categoriasArray);
-    // };    
+    // };
 
     useFocusEffect(
         React.useCallback(() => {
@@ -89,7 +93,8 @@ const App = () => {
                     atributos.add(key);
                 });
             });
-            // console.log("Atributos de la colección 'pyme':", Array.from(atributos));
+
+            console.log("Atributos de la colección 'pyme':", Array.from(atributos));
         } catch (error) {
             console.error(
                 "Error obteniendo los atributos de la colección 'pyme':",
@@ -170,7 +175,7 @@ const App = () => {
         }
     }, [categoriasElegir])
 
-    const obtenerDetallesPyme = async (pymeId:any) => {
+    const obtenerDetallesPyme = async (pymeId) => {
         const docRef = doc(ikam, "pyme", pymeId);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
@@ -217,6 +222,7 @@ const App = () => {
                 </View>
                 {pymesQ.length > 0 ?
                     <View>
+
                         <View style={estilos.contenedorPymes}>
                             <ListaPymes
                                 setPymeSeleccionada={setPymeSeleccionada}

@@ -8,8 +8,7 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
-  Alert,
-  Dimensions
+  Alert
 } from 'react-native';
 import Logo from '../assets/img/logo_ikam.png';
 import { AntDesign, Entypo } from '@expo/vector-icons';
@@ -19,7 +18,6 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { collection, doc, setDoc } from 'firebase/firestore';
 import { registerUser } from "../auth/authRegister";
 import { FontAwesome5 } from '@expo/vector-icons';
-const { width, height } = Dimensions.get('window');
 
 const RegisterScreen = () => {
   const [form, setForm] = useState({
@@ -165,7 +163,9 @@ const RegisterScreen = () => {
                 }}
               />
             </View>
-            {/* <Text style={styles.formLink}>Registrarse con número telefónico</Text> */}
+
+            <Text style={styles.formLink}>Registrarse con número telefónico</Text>
+
             <View style={styles.formAction}>
               <TouchableOpacity onPress={handleRegister}>
                 <View style={styles.btnContain}>
@@ -202,7 +202,7 @@ const RegisterScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 0,
+    paddingVertical: 30,
     paddingHorizontal: 20,
     flexGrow: 1,
     flexShrink: 1,
@@ -210,7 +210,6 @@ const styles = StyleSheet.create({
   },
   label: {
     textAlign: 'center',
-    fontSize: 20
   },
   labelLink: {
     textAlign: 'center',
@@ -228,23 +227,21 @@ const styles = StyleSheet.create({
     color: '#929292',
   },
   subtitle2: {
-    fontSize: 20,
-    fontWeight: '900',
+    fontSize: 15,
+    fontWeight: 'black',
     color: '#1D2A32',
-    textAlign: 'center',
-    marginBottom: 0,
+    alignSelf: 'center',
+    marginBottom: 10,
   },
   header: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 30,
+    marginVertical: 36,
   },
   logo: {
     alignSelf: 'center',
-    width: width * 0.8,
-    height: height * 0.2,
-    marginBottom: -25,
-    marginTop: 50
+    width: 300,
+    height: 150,
   },
   form: {
     marginBottom: 24,
@@ -289,7 +286,6 @@ const styles = StyleSheet.create({
   },
   btnContain: {
     alignItems: 'center',
-    marginTop: 1,
   },
   btn: {
     flexDirection: 'row',
@@ -300,8 +296,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     backgroundColor: '#C61919',
     borderColor: '#222C57',
-    width: width * 0.8,
-    marginBottom: 15
+    width: "40%",
   },
   btnText: {
     fontSize: 15,

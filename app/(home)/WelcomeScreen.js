@@ -1,54 +1,15 @@
-import { View, Text, SafeAreaView, Pressable, Image, StyleSheet, Dimensions, PermissionsAndroid } from 'react-native';
-import colorsIkam from '../assets/estilos';
+import React from 'react';
+import { View, Text, SafeAreaView, Pressable, Image, StyleSheet, Dimensions } from 'react-native';
 import { useRouter } from 'expo-router';
+import colorsIkam from '../assets/estilos';
 import { useFonts } from 'expo-font';
-import React, { useEffect } from 'react';
-import messaging from '@react-native-firebase/messaging';
-
 
 const { width, height } = Dimensions.get('window');
 
 const WelcomeScreen = () => {
-  async function requestUserPermission() {
-    const authStatus = await messaging().requestPermission();
-    const enabled =
-      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
-    if (enabled) {
-      console.log('Authorization status:', authStatus);
-    }
-  }
-
-  const getToken = async () => {
-    const token = await messaging().getToken()
-    console.log("Token = ", token)
-  }    
-
-  const NotificationPermission = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-        {
-          // title: 'IKAM Multitiendas',
-          // message: 'IKAM Multitiendas necesita un acceso para enviarle notificaciones.',
-          // buttonNeutral: 'Pregúntame Luego',
-          // buttonNegative: 'Cancelar',
-          // buttonPositive: 'Ok',
-        },
-        console.log(PermissionsAndroid.RESULTS.granted)
-      );
-    } catch (err) {
-      console.warn(err);
-    }
+  const handleLogin = () => {
+    // Implement login logic here    
   };
-
-  useEffect(() => {
-    NotificationPermission();
-    getToken()
-    requestUserPermission()
-  }, [])
-
 
   const [fontsLoaded] = useFonts({
     Space: require('../assets/fonts/SpaceMono-Regular.ttf'),
@@ -85,7 +46,7 @@ const WelcomeScreen = () => {
           onPress={() => ruta.push('/LoginScreen')}
         >
           <Text style={estilos.btnText}>Comienza YA</Text>
-        </Pressable>
+        </Pressable>        
       </View>
     </SafeAreaView>
   );
