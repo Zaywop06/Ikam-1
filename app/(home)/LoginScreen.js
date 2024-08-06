@@ -7,140 +7,170 @@ import {
   Text,
   TouchableOpacity,
   TextInput,
-  ScrollView
+  ScrollView,
+  Pressable,
+  Alert,
+  Dimensions
 } from 'react-native';
-import Logo from '../assets/img/logo_ikam.png'
+import Logo from '../assets/img/logo_ikam.png';
 import { AntDesign, Entypo } from '@expo/vector-icons';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
+import { auth, ikam } from '../firebase/config-ikam';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { saveUserData } from "../auth/authService";
+const { width, height } = Dimensions.get('window');
 
 const LoginScreen = () => {
   const [form, setForm] = useState({
     email: '',
     password: '',
   });
+  const [errorMessage, setErrorMessage] = useState('');
+  const router = useRouter();
+
+  const handleLogin = async () => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, form.email, form.password);
+      const user = userCredential.user;
+      const userDocRef = doc(ikam, 'users', user.uid);
+      const userDoc = await getDoc(userDocRef);
+
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        // console.log('User Data:', userData);
+        await saveUserData(user);
+        console.log(saveUserData)
+        router.push({ pathname: '(tabs)', params: { user: userData } });
+      } else {
+        setErrorMessage('No se encontraron datos del usuario.');
+      }
+    } catch (error) {
+      setErrorMessage('Correo o contraseña incorrectos');
+      console.log(error.message)
+    }
+  };
+
+  const validateForm = () => {
+    if (!form.email || !form.password) {
+      Alert.alert("Campos vacios", "Todos los campos deben ser llenados");              
+      return false;
+    }
+    return true;
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <View style={styles.container}>
         <ScrollView>
-
-          < Image source={Logo}
-            style={styles.logo} />
+          <Image source={Logo} style={styles.logo} />
           <View style={styles.header}>
             <Text style={styles.title}>
-              Inicia sesion <Text style={{ color: '#075eec' }}></Text>
+              Inicia sesión <Text style={{ color: '#075eec' }}></Text>
             </Text>
           </View>
 
           <View style={styles.form}>
             <View style={styles.input}>
-
               <TextInput
                 autoCapitalize="none"
                 autoCorrect={false}
                 clearButtonMode="while-editing"
                 keyboardType="email-address"
                 onChangeText={email => setForm({ ...form, email })}
-                placeholder="Correo electronico"
+                placeholder="Correo electrónico"
                 placeholderTextColor="#6b7280"
                 style={styles.inputControl}
-                value={form.email} />
+                value={form.email}
+              />
             </View>
-            <View style={styles.input}>
 
+            <View style={styles.input}>
               <TextInput
                 autoCapitalize="none"
                 autoCorrect={false}
                 clearButtonMode="while-editing"
-                keyboardType="visible-password"
+                secureTextEntry
                 onChangeText={password => setForm({ ...form, password })}
                 placeholder="Contraseña"
                 placeholderTextColor="#6b7280"
                 style={styles.inputControl}
-                value={form.password} />
+                value={form.password}
+              />
             </View>
+
+            {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
             <Text style={styles.formLink}>¿Has olvidado tu contraseña?</Text>
 
             <View style={styles.formAction}>
-              <TouchableOpacity
-                onPress={() => {
-                  // handle onPress
-                }}>
+              <TouchableOpacity onPress={() => {
+                if (validateForm()) {
+                  handleLogin()
+                }
+              }}>
                 <View style={styles.btnContain}>
-                  <Link href={'(tabs)'}>
                   <View style={styles.btn}>
                     <Text style={styles.btnText}>Ingresar</Text>
                   </View>
-                  </Link>
                 </View>
-
               </TouchableOpacity>
             </View>
-            <Text style={styles.subtitle2}>
-              O también
-            </Text>
-            <View style={styles.input}>
-            </View>
 
+            <Text style={styles.subtitle2}>O también</Text>
+            <View style={styles.input} />
             <View style={styles.signInButtons}>
+
               {/* <TouchableOpacity
                 onPress={() => { }}
                 style={styles.signInBtn}
               >
                 <Entypo name='email' color='#81f7d8' size={30} />                
               </TouchableOpacity> */}
-              <TouchableOpacity
-                onPress={() => { }}
-                style={styles.signInBtn}
-              >
+
+              <TouchableOpacity onPress={() => { }} style={styles.signInBtn}>
                 <Entypo name='facebook-with-circle' color='#5882FA' size={40} />
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => { }}
-                style={styles.signInBtn}
-              >
+
+              <TouchableOpacity onPress={() => { }} style={styles.signInBtn}>
                 <AntDesign name='google' color='#F78181' size={40} />
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => { }}
-                style={styles.signInBtn}
-              >
-                <Entypo name='circle' size={40} />
 
+              <TouchableOpacity onPress={() => { }} style={styles.signInBtn}>
+                <Entypo name='circle' size={40} />
               </TouchableOpacity>
             </View>
-            <View style={styles.input}>
-            </View>
+
+            <View style={styles.input} />
             <Text style={styles.label}>
-              ¿No tienes cuenta? <Link href={'RegisterScreen'} style={styles.labelLink}>Registrate en IKAM</Link> 
+              ¿No tienes cuenta? <Link href={'RegisterScreen'} style={styles.labelLink}>Regístrate en IKAM</Link>
             </Text>
           </View>
         </ScrollView>
       </View>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     paddingVertical: 40,
     paddingHorizontal: 20,
-    flexGrow: 1,
-    flexShrink: 1,
-    flexBasis: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   label: {
     textAlign: 'center',
   },
   labelLink: {
     textAlign: 'center',
-    color: 'blue'
-  },  
+    color: 'blue',
+  },
   title: {
     fontSize: 30,
     fontWeight: '700',
     color: '#222C57',
-    marginBottom: 6,
+    marginBottom: 16,
   },
   subtitle: {
     fontSize: 10,
@@ -149,12 +179,11 @@ const styles = StyleSheet.create({
   },
   subtitle2: {
     fontSize: 15,
-    fontWeight: 'black',
+    fontWeight: '900',
     color: '#1D2A32',
-    alignSelf: 'center',
-    marginBottom: 10,
+    textAlign: 'center',
+    marginBottom: 20,
   },
-  /** Header */
   header: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -168,28 +197,29 @@ const styles = StyleSheet.create({
   },
   logo: {
     alignSelf: 'center',
-    width: 300,
-    height: 150,
+    width: width * 0.8,
+    height: height * 0.2,
+    marginBottom: 20,
   },
-  /** Form */
   form: {
+    width: '100%',
     marginBottom: 24,
     paddingHorizontal: 24,
-    flexGrow: 1,
-    flexShrink: 1,
-    flexBasis: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   formAction: {
-    marginTop: 10,
+    marginTop: 20,
     marginBottom: 16,
-
+    alignItems: 'center',
   },
   formLink: {
     fontSize: 15,
     fontWeight: '600',
     color: '#222C57',
-    textAlign: 'right',
+    textAlign: 'center',
     marginBottom: 30,
+    marginTop: 30,
   },
   formFooter: {
     fontSize: 15,
@@ -198,15 +228,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     letterSpacing: 0.15,
   },
-  /** Input */
   input: {
+    width: '100%',
     marginBottom: 16,
   },
   inputLabel: {
     fontSize: 10,
     fontWeight: '600',
     color: '#222',
-    marginBottom: 1,
+    marginBottom: 5,
   },
   inputControl: {
     marginTop: 15,
@@ -220,6 +250,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#222C57',
     borderStyle: 'solid',
+    width: '100%',
   },
   inputControl2: {
     height: 50,
@@ -230,15 +261,15 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#222',
     borderWidth: 2,
-    borderColor: '#222C57',//'#41DFD1','#C61919',
+    borderColor: '#222C57',
     borderStyle: 'solid',
     marginBottom: 7,
     marginTop: 10,
+    width: '100%',
   },
-
-  /** Button */
-  btnContain:{
+  btnContain: {
     alignItems: 'center',
+    marginTop: 20,
   },
   btn: {
     flexDirection: 'row',
@@ -249,7 +280,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     backgroundColor: '#C61919',
     borderColor: '#222C57',
-    width: "40%",
+    width: width * 0.8,
   },
   btnText: {
     fontSize: 15,
@@ -258,24 +289,32 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   signInButtons: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    marginBottom: 0,
-    width: "100%",
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    width: '100%',
+    marginTop: 20,
   },
   signInBtn: {
-    flexDirection: "row",
-    width: "40%",
+    flexDirection: 'row',
+    width: '40%',
     borderWidth: 0,
     padding: 25,
     borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   signInBtnText: {
     marginLeft: 10,
     fontSize: 13,
   },
+  error: {
+    textAlign: 'center',
+    color: '#C61919',
+    marginTop: 10,
+  },
 });
+
+
+
 
 export default LoginScreen;

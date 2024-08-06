@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
   View,
@@ -7,6 +7,8 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
+  Alert
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -18,11 +20,79 @@ import {
   faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "expo-router";
+import { getUserData, clearUserData } from "../../auth/authService";
+import { useRouter } from 'expo-router';
+import { doc, getDoc } from 'firebase/firestore';
+import { ikam } from '../../firebase/config-ikam';
 
 export default function App() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const data = await getUserData(); // Obtener datos del usuario desde AsyncStorage y Firestore
+        if (data && data.uid) {
+          const userDocRef = doc(ikam, 'users', data.uid);
+          const userDoc = await getDoc(userDocRef);
+
+          if (userDoc.exists()) {
+            setUserData(userDoc.data()); // Guardar datos del usuario en el estado
+          } else {
+            console.log('No such document!');
+            setUserData(null); // Manejar el caso en que no se encuentra el documento
+          }
+        } else {
+          console.log('No user data found or UID is missing');
+          setUserData(null); // Manejar el caso en que no hay datos de usuario
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      } finally {
+        setLoading(false); // Siempre debe establecerse a false cuando se complete la carga
+      }
+    };
+    fetchUserData();
+  }, [])
+
   useEffect(() => {
     library.add(faUserCircle, faShieldAlt, faBell, faLock, faSignOutAlt);
   }, []);
+
+  if (loading) {
+    return <ActivityIndicator size="large" color="#0000ff" />;
+  }
+
+  if (!userData) {
+    return <Text>No user data found</Text>;
+  }
+
+  const handleSignOut = () => {
+    Alert.alert(
+      'Cerrar Sesion',
+      '¿Estás seguro que desea cerrar sesion?',
+      [
+        { text: 'No', onPress: () => null, style: 'cancel' },
+        {
+          text: 'Sí', onPress: async () => {
+            try {
+              // await signOut(auth);
+              await clearUserData();
+              router.replace('/WelcomeScreen');
+            } catch (error) {
+              console.error('Error signing out:', error);
+            }
+
+          }
+        },
+      ],
+      { cancelable: false }
+    );
+
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -36,24 +106,24 @@ export default function App() {
         <View style={styles.contenedorPerfilColumnas}>
           <Icon name="user-circle" size={70} color="#FFF" solid />
           <View style={styles.textoPerfilContainer}>
-            <Text style={styles.textoPerfil}>Nombre de Usuario</Text>
-            <Text style={styles.textoCorreo}>Correo Electrónico</Text>
+            <Text style={styles.textoPerfil}>{ userData.display_name +" "+ userData.last_name}</Text>
+            <Text style={styles.textoCorreo}>{userData.email}</Text>
           </View>
         </View>
       </View>
       <ScrollView style={styles.contenedorOpciones}>
-        <RenderOption icon="user-circle" text="Información Personal" />
-        <RenderOption icon="shield-alt" text="Seguridad" />
-        <RenderOption icon="bell" text="Notificaciones" />
-        <RenderOption icon="lock" text="Privacidad" />
-        <Link href={'/'}><RenderOption icon="sign-out-alt" text="Cerrar Sesión" /></Link>
+        <RenderOption icon="user-circle" text="Información Personal" onPress={null} />
+        <RenderOption icon="shield-alt" text="Seguridad" onPress={null} />
+        <RenderOption icon="bell" text="Notificaciones" onPress={null} />
+        <RenderOption icon="lock" text="Privacidad" onPress={null} />
+        <RenderOption icon="sign-out-alt" text="Cerrar Sesión" onPress={handleSignOut} />
       </ScrollView>
     </SafeAreaView>
   );
 }
 
-const RenderOption = ({ icon, text }) => (
-  <TouchableOpacity style={styles.elementoOpcion}>
+const RenderOption = ({ icon, text, onPress }) => (
+  <TouchableOpacity style={styles.elementoOpcion} onPress={onPress}>
     <Icon name={icon} size={24} color="#888" solid />
     <Text style={styles.textoOpcion}>{text}</Text>
     <Text style={styles.flecha}>›</Text>

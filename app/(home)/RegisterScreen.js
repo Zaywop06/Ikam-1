@@ -7,119 +7,189 @@ import {
   Text,
   TouchableOpacity,
   TextInput,
-  ScrollView
+  ScrollView,
+  Alert
 } from 'react-native';
-import Logo from '../assets/img/logo_ikam.png'
+import Logo from '../assets/img/logo_ikam.png';
 import { AntDesign, Entypo } from '@expo/vector-icons';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
+import { auth, ikam } from '../firebase/config-ikam';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { collection, doc, setDoc } from 'firebase/firestore';
+import { registerUser } from "../auth/authRegister";
+import { FontAwesome5 } from '@expo/vector-icons';
 
-const LoginScreen = () => {
+const RegisterScreen = () => {
   const [form, setForm] = useState({
     email: '',
     password: '',
+    confirmPassword: '',
+    name: '',
+    last_name: '',
   });
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const router = useRouter();
+
+  const handleRegister = async () => {
+    const { email, password, confirmPassword, name, last_name } = form;
+
+    // Validaciones
+    if (!name || !last_name || !email || !password || !confirmPassword) {
+      Alert.alert('Error', 'Todos los campos son requeridos');
+      return;
+    }
+
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      Alert.alert('Error', 'Correo electrónico inválido');
+      return;
+    }
+
+    if (password.length < 6) {
+      Alert.alert('Error', 'La contraseña debe tener al menos 6 caracteres');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Las contraseñas no coinciden');
+      return;
+    }
+
+    try {
+      await registerUser(email, password, name, last_name);
+      router.push('(tabs)');
+    } catch (error) {
+      console.error("Error al registrar el usuario:", error);
+      Alert.alert("Error", error.message);
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <View style={styles.container}>
         <ScrollView>
-
-          < Image source={Logo}
-            style={styles.logo} />
+          <Image source={Logo} style={styles.logo} />
           <View style={styles.header}>
-            <Text style={styles.title}>
-              Registrate
-            </Text>
+            <Text style={styles.title}>Regístrate</Text>
           </View>
 
           <View style={styles.form}>
+            {/* Campos de entrada */}
             <View style={styles.input}>
+              <TextInput
+                autoCapitalize="none"
+                autoCorrect={false}
+                clearButtonMode="while-editing"
+                keyboardType="default"
+                onChangeText={name => setForm({ ...form, name })}
+                placeholder="Nombre"
+                placeholderTextColor="#6b7280"
+                style={styles.inputControl}
+                value={form.name}
+              />
+            </View>
 
+            <View style={styles.input}>
+              <TextInput
+                autoCapitalize="none"
+                autoCorrect={false}
+                clearButtonMode="while-editing"
+                keyboardType="default"
+                onChangeText={last_name => setForm({ ...form, last_name })}
+                placeholder="Apellido"
+                placeholderTextColor="#6b7280"
+                style={styles.inputControl}
+                value={form.last_name}
+              />
+            </View>
+
+            <View style={styles.input}>
               <TextInput
                 autoCapitalize="none"
                 autoCorrect={false}
                 clearButtonMode="while-editing"
                 keyboardType="email-address"
                 onChangeText={email => setForm({ ...form, email })}
-                placeholder="Correo electronico"
+                placeholder="Correo electrónico"
                 placeholderTextColor="#6b7280"
                 style={styles.inputControl}
-                value={form.email} />
+                value={form.email}
+              />
             </View>
-            <View style={styles.input}>
+
+            <View style={styles.inputContainer}>
               <TextInput
                 autoCapitalize="none"
                 autoCorrect={false}
                 clearButtonMode="while-editing"
-                keyboardType="visible-password"
+                secureTextEntry={!showPassword}
                 onChangeText={password => setForm({ ...form, password })}
                 placeholder="Contraseña"
                 placeholderTextColor="#6b7280"
                 style={styles.inputControl}
-                value={form.password} />
+                value={form.password}
+              />
+              <FontAwesome5
+                style={styles.eyeIcon}
+                name={showPassword ? 'eye' : 'eye-slash'}
+                size={25}
+                color="#222C57"
+                onPress={() => {
+                  setShowPassword(!showPassword)
+                }}
+              />
             </View>
-            <View style={styles.input}>
+            <View style={styles.inputContainer}>
               <TextInput
                 autoCapitalize="none"
                 autoCorrect={false}
                 clearButtonMode="while-editing"
-                keyboardType="visible-password"
-                onChangeText={password => setForm({ ...form, password })}
+                secureTextEntry={!showConfirmPassword}
+                onChangeText={confirmPassword => setForm({ ...form, confirmPassword })}
                 placeholder="Confirmar contraseña"
                 placeholderTextColor="#6b7280"
                 style={styles.inputControl}
-                value={form.password} />
+                value={form.confirmPassword}
+              />
+              <FontAwesome5
+                style={styles.eyeIcon}
+                name={showConfirmPassword ? 'eye' : 'eye-slash'}
+                size={25}
+                color="#222C57"
+                onPress={() => {
+                  setShowConfirmPassword(!showConfirmPassword)
+                }}
+              />
             </View>
-            <Text style={styles.formLink}>Registrarse con numero telefonico</Text>
+
+            <Text style={styles.formLink}>Registrarse con número telefónico</Text>
 
             <View style={styles.formAction}>
-              <TouchableOpacity
-                onPress={() => {
-                  // handle onPress
-                }}>
+              <TouchableOpacity onPress={handleRegister}>
                 <View style={styles.btnContain}>
                   <View style={styles.btn}>
                     <Text style={styles.btnText}>Registrar</Text>
                   </View>
                 </View>
-
               </TouchableOpacity>
             </View>
-            <Text style={styles.subtitle2}>
-              O también
-            </Text>
-            <View style={styles.input}>
-            </View>
+
+            <Text style={styles.subtitle2}>O también</Text>
 
             <View style={styles.signInButtons}>
-              {/* <TouchableOpacity
-                onPress={() => { }}
-                style={styles.signInBtn}
-              >
-                <Entypo name='email' color='#81f7d8' size={30} />                
-              </TouchableOpacity> */}
-              <TouchableOpacity
-                onPress={() => { }}
-                style={styles.signInBtn}
-              >
+              <TouchableOpacity style={styles.signInBtn}>
                 <Entypo name='facebook-with-circle' color='#5882FA' size={40} />
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => { }}
-                style={styles.signInBtn}
-              >
+              <TouchableOpacity style={styles.signInBtn}>
                 <AntDesign name='google' color='#F78181' size={40} />
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => { }}
-                style={styles.signInBtn}
-              >
+              <TouchableOpacity style={styles.signInBtn}>
                 <Entypo name='circle' size={40} />
-
               </TouchableOpacity>
             </View>
-            <View style={styles.input}>
-            </View>
+
             <Text style={styles.label}>
               ¿Ya tienes una cuenta? <Link href={'LoginScreen'} style={styles.labelLink}>Inicia en IKAM</Link>
             </Text>
@@ -128,7 +198,7 @@ const LoginScreen = () => {
       </View>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -163,24 +233,16 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: 10,
   },
-  /** Header */
   header: {
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 36,
-  },
-  headerImg: {
-    width: 80,
-    height: 80,
-    alignSelf: 'center',
-    marginBottom: 36,
   },
   logo: {
     alignSelf: 'center',
     width: 300,
     height: 150,
   },
-  /** Form */
   form: {
     marginBottom: 24,
     paddingHorizontal: 24,
@@ -191,7 +253,6 @@ const styles = StyleSheet.create({
   formAction: {
     marginTop: 10,
     marginBottom: 16,
-
   },
   formLink: {
     fontSize: 15,
@@ -207,15 +268,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     letterSpacing: 0.15,
   },
-  /** Input */
   input: {
     marginBottom: 16,
-  },
-  inputLabel: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: '#222',
-    marginBottom: 1,
   },
   inputControl: {
     marginTop: 15,
@@ -230,22 +284,6 @@ const styles = StyleSheet.create({
     borderColor: '#222C57',
     borderStyle: 'solid',
   },
-  inputControl2: {
-    height: 50,
-    backgroundColor: '#fff',
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    fontSize: 15,
-    fontWeight: '500',
-    color: '#222',
-    borderWidth: 2,
-    borderColor: '#222C57',//'#41DFD1','#C61919',
-    borderStyle: 'solid',
-    marginBottom: 7,
-    marginTop: 10,
-  },
-
-  /** Button */
   btnContain: {
     alignItems: 'center',
   },
@@ -285,6 +323,17 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 13,
   },
+  eyeIcon: {
+    position: 'absolute',
+    right: 10,
+    top: 25,
+    height: 30,
+    justifyContent: 'center',
+  },
+  inputContainer: {
+    position: 'relative',
+    marginBottom: 15,
+  },
 });
 
-export default LoginScreen;
+export default RegisterScreen;

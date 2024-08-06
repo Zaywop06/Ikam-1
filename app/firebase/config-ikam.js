@@ -1,19 +1,28 @@
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { initializeApp, getApps } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
+import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Configuración de Firebase para la segunda base de datos
 const firebaseConfig2 = {
   apiKey: "AIzaSyB-Sm38xUlEJRRS4cB0MKjSjCI_uzRhoE8",
   projectId: "ikamultitiendas",
   storageBucket: "ikamultitiendas.appspot.com",
   authDomain: "ikamultitiendas.firebaseapp.com",
-  // messagingSenderId: "1035183332106",
   appId: "1:844394495235:android:34bf6cd669fe2b7d487d36"
-  // measurementId: "G-MLPG9FYYD8"
 };
 
-// Inicializa la segunda instancia de Firebase
-const app2 = initializeApp(firebaseConfig2, "app2");
+// Verificar si hay alguna app inicializada antes de inicializar una nueva
+let app2;
+if (!getApps().length) {
+  app2 = initializeApp(firebaseConfig2);
+} else {
+  app2 = getApps()[0];
+}
+
+const auth = initializeAuth(app2, {
+  persistence: getReactNativePersistence(AsyncStorage),
+});
+
 const ikam = getFirestore(app2);
 
-export { app2, ikam };
+export { app2, ikam, auth };
