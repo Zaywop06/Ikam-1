@@ -20,6 +20,9 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "permissions": [
+        "POST_NOTIFICATIONS", "android.permission.SCHEDULE_EXACT_ALARM"
+      ],
       "package": "com.allsveam.Ikam"
     },
     "web": {
