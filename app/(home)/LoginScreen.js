@@ -1,4 +1,9 @@
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { AntDesign, Entypo } from '@expo/vector-icons';
+import { doc, getDoc } from 'firebase/firestore';
+import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
+
 import {
   StyleSheet,
   SafeAreaView,
@@ -12,14 +17,12 @@ import {
   Alert,
   Dimensions
 } from 'react-native';
-import Logo from '../assets/img/logo_ikam.png';
-import { AntDesign, Entypo } from '@expo/vector-icons';
-import { Link, useRouter } from 'expo-router';
-import { auth, ikam } from '../firebase/config-ikam';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
-import { saveUserData } from "../auth/authService";
+
 const { width, height } = Dimensions.get('window');
+
+import { auth, ikam } from '../firebase/config-ikam';
+import { saveUserData } from "../auth/authService";
+import Logo from '../assets/img/logo_ikam.png';
 
 const LoginScreen = () => {
   const [form, setForm] = useState({
@@ -40,7 +43,7 @@ const LoginScreen = () => {
         const userData = userDoc.data();
         // console.log('User Data:', userData);
         await saveUserData(user);
-        console.log(saveUserData)
+        // console.log(saveUserData)
         router.push({ pathname: '(tabs)', params: { user: userData } });
       } else {
         setErrorMessage('No se encontraron datos del usuario.');
@@ -53,7 +56,7 @@ const LoginScreen = () => {
 
   const validateForm = () => {
     if (!form.email || !form.password) {
-      Alert.alert("Campos vacios", "Todos los campos deben ser llenados");              
+      Alert.alert("Campos vacios", "Todos los campos deben ser llenados");
       return false;
     }
     return true;
@@ -116,9 +119,8 @@ const LoginScreen = () => {
               </TouchableOpacity>
             </View>
 
-            <Text style={styles.subtitle2}>O también</Text>
-            <View style={styles.input} />
-            <View style={styles.signInButtons}>
+            {/* <Text style={styles.subtitle2}>O también</Text>            
+            <View style={styles.signInButtons}> */}
 
               {/* <TouchableOpacity
                 onPress={() => { }}
@@ -127,7 +129,7 @@ const LoginScreen = () => {
                 <Entypo name='email' color='#81f7d8' size={30} />                
               </TouchableOpacity> */}
 
-              <TouchableOpacity onPress={() => { }} style={styles.signInBtn}>
+              {/* <TouchableOpacity onPress={() => { }} style={styles.signInBtn}>
                 <Entypo name='facebook-with-circle' color='#5882FA' size={40} />
               </TouchableOpacity>
 
@@ -138,7 +140,7 @@ const LoginScreen = () => {
               <TouchableOpacity onPress={() => { }} style={styles.signInBtn}>
                 <Entypo name='circle' size={40} />
               </TouchableOpacity>
-            </View>
+            </View> */}
 
             <View style={styles.input} />
             <Text style={styles.label}>
@@ -154,13 +156,14 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: 40,
+    paddingVertical: 0,
     paddingHorizontal: 20,
     justifyContent: 'center',
     alignItems: 'center',
   },
   label: {
     textAlign: 'center',
+    fontSize: 20
   },
   labelLink: {
     textAlign: 'center',
@@ -170,7 +173,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: '700',
     color: '#222C57',
-    marginBottom: 16,
+    marginBottom: 0,
   },
   subtitle: {
     fontSize: 10,
@@ -178,7 +181,7 @@ const styles = StyleSheet.create({
     color: '#929292',
   },
   subtitle2: {
-    fontSize: 15,
+    fontSize: 20,
     fontWeight: '900',
     color: '#1D2A32',
     textAlign: 'center',
@@ -199,27 +202,26 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: width * 0.8,
     height: height * 0.2,
-    marginBottom: 20,
+    marginBottom: -25,
+    marginTop: 50
   },
   form: {
     width: '100%',
-    marginBottom: 24,
-    paddingHorizontal: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
+    marginBottom: 14,
+    paddingHorizontal: 24,    
   },
   formAction: {
-    marginTop: 20,
+    marginTop: 10,
     marginBottom: 16,
     alignItems: 'center',
   },
   formLink: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#222C57',
-    textAlign: 'center',
-    marginBottom: 30,
-    marginTop: 30,
+    color: '#222C57',    
+    marginBottom: 10,
+    marginTop: 10,
+    textAlign: 'right'
   },
   formFooter: {
     fontSize: 15,
@@ -230,7 +232,7 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '100%',
-    marginBottom: 16,
+    marginBottom: 20,
   },
   inputLabel: {
     fontSize: 10,
@@ -269,7 +271,7 @@ const styles = StyleSheet.create({
   },
   btnContain: {
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 1,
   },
   btn: {
     flexDirection: 'row',
@@ -281,6 +283,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#C61919',
     borderColor: '#222C57',
     width: width * 0.8,
+    marginBottom: 15
   },
   btnText: {
     fontSize: 15,
@@ -291,8 +294,7 @@ const styles = StyleSheet.create({
   signInButtons: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    width: '100%',
-    marginTop: 20,
+    width: '100%',    
   },
   signInBtn: {
     flexDirection: 'row',

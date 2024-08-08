@@ -1,26 +1,8 @@
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Tabs } from 'expo-router';
-import { getUserData } from "../../auth/authService";
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 export default function TabLayout() {
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const userData = await getUserData();
-        if (userData && userData.isAdmin) {
-          setIsAdmin(true);
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
-
-    fetchUserData();
-  }, []);
-
   return (
     <Tabs
       screenOptions={{

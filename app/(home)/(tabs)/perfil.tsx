@@ -12,14 +12,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import {
-  faUserCircle,
-  faShieldAlt,
-  faBell,
-  faLock,
-  faSignOutAlt,
-} from "@fortawesome/free-solid-svg-icons";
-import { Link } from "expo-router";
+import { faUserCircle, faShieldAlt, faBell, faLock,faSignOutAlt} from "@fortawesome/free-solid-svg-icons";
 import { getUserData, clearUserData } from "../../auth/authService";
 import { useRouter } from 'expo-router';
 import { doc, getDoc } from 'firebase/firestore';
@@ -112,10 +105,10 @@ export default function App() {
         </View>
       </View>
       <ScrollView style={styles.contenedorOpciones}>
-        <RenderOption icon="user-circle" text="Información Personal" onPress={null} />
+        {/* <RenderOption icon="user-circle" text="Información Personal" onPress={null} />
         <RenderOption icon="shield-alt" text="Seguridad" onPress={null} />
         <RenderOption icon="bell" text="Notificaciones" onPress={null} />
-        <RenderOption icon="lock" text="Privacidad" onPress={null} />
+        <RenderOption icon="lock" text="Privacidad" onPress={null} /> */}
         <RenderOption icon="sign-out-alt" text="Cerrar Sesión" onPress={handleSignOut} />
       </ScrollView>
     </SafeAreaView>

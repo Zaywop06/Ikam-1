@@ -94,28 +94,24 @@ export default function App() {
     const docRef = doc(ikam, "pyme", pymeId);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-        return docSnap.data();
+      return docSnap.data();
     } else {
-        return null;
+      return null;
     }
-};
-
-
-
+  };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.header}>
+    <SafeAreaView style={styles.areaSegura}>
+      <View style={styles.cabecera}>
         <Image
           source={require("../../assets/img/logo1.png")}
           style={styles.logo}
         />
       </View>
-      <ScrollView style={styles.contenedor}>
-        <Text style={styles.textoFavoritos}>Favoritos</Text>
+      <Text style={styles.textoFavoritos}>Favoritos</Text>
+      <ScrollView>
         {pymesQ.length > 0 ?
           <View>
-
             <View style={styles.contenedorPymes}>
               <ListaPymes
                 setPymeSeleccionada={setPymeSeleccionada}
@@ -145,59 +141,57 @@ export default function App() {
           vistaDetalles={vistaDetalles}
           setVistaDetalles={setVistaDetalles}
         />
-
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#f0f0f0",
-  },
-  header: {
-    backgroundColor: "#CC0000",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  logo: {
-    width: 85,
-    height: 85,
-    resizeMode: "contain",
-  },
-  contenedor: {
-    flex: 1,
-    paddingHorizontal: 20,
-  },
   textoFavoritos: {
     marginVertical: 15,
     fontSize: 35,
     fontWeight: "bold",
     textAlign: 'center'
   },
-  contenedorPymes: {
-    flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 10,
-  },
-  contenedorNF: {
-    flex: 1,
-    paddingTop: 25,
-  },
-  notfoundImg: {
-    width: 400,
-    height: 400,
-    borderTopLeftRadius: 10,
-    borderBottomLeftRadius: 10,
-    resizeMode: "stretch",
-  },
-  noEncontrado: {
-    textAlign: "center",
-    fontSize: 30,
-    marginVertical: 10
-
-  }
+  areaSegura: {
+        flex: 1,
+        backgroundColor: "#F0F0F0",
+    },
+    cabecera: {
+        backgroundColor: "#CC0000",
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    logo: {
+        width: 85,
+        height: 85,
+        resizeMode: "contain",
+    },
+    contenedorCategorias: {
+        paddingHorizontal: 10,
+        paddingVertical: 10,
+    },
+    contenedorPymes: {
+        flex: 1,
+        paddingHorizontal: 20,
+        paddingTop: 10,
+    },
+    contenedorNF: {
+        flex: 1,
+        paddingTop: 25,
+    },
+    notfoundImg: {
+        width: 400,
+        height: 400,
+        borderTopLeftRadius: 10,
+        borderBottomLeftRadius: 10,
+        resizeMode: "stretch",
+    },
+    noEncontrado: {
+        textAlign: "center",
+        fontSize: 30,
+        marginVertical: 10
+    }
 });

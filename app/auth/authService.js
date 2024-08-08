@@ -1,7 +1,4 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { auth } from '../firebase/config-ikam';
-import { doc, getDoc } from 'firebase/firestore';
-import { ikam } from '../firebase/config-ikam';
 
 export const saveUserData = async (user) => {
   try {

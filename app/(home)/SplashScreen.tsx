@@ -1,14 +1,12 @@
-import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, Image, Animated, Dimensions } from 'react-native';
-import { useRouter } from 'expo-router';
-import { getUserData, clearUserData } from '../auth/authService';
-import { doc, getDoc } from 'firebase/firestore';
-import { ikam } from '../firebase/config-ikam';
-
-import colorsIkam from '../assets/estilos'
-import Logo from '../assets/img/logo.png'
+import { View, StyleSheet, Animated, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { transform } from 'typescript';
+import { doc, getDoc } from 'firebase/firestore';
+import React, { useEffect, useRef } from 'react';
+import { useRouter } from 'expo-router';
+
+import { getUserData, clearUserData } from '../auth/authService';
+import { ikam } from '../firebase/config-ikam';
+import colorsIkam from '../assets/estilos';
 
 const SplashScreen = () => {
     const router = useRouter();
@@ -91,7 +89,7 @@ const SplashScreen = () => {
                     ]}
                 >
                     <Animated.Image
-                        source={Logo}
+                        source={require("../assets/img/logo.png")}
                         style={[
                             styles.imagenLogo,
                             {
