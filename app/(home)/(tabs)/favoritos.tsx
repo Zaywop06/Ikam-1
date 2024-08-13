@@ -1,4 +1,10 @@
-import { collection, getDocs, onSnapshot, doc, getDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  onSnapshot,
+  doc,
+  getDoc,
+} from "firebase/firestore";
 import React, { useEffect, useState, useCallback } from "react";
 import { auth, ikam } from "../../firebase/config-ikam";
 import {
@@ -9,9 +15,8 @@ import {
   Text,
   ScrollView,
 } from "react-native";
-import VistaDetallesPymeMod from '../../components/DetallesPymeModal';
-import ListaPymes from '../../components/pymes';
-
+import VistaDetallesPymeMod from "../../components/DetallesPymeModal";
+import ListaPymes from "../../components/pymes";
 
 export default function App() {
   const [pymeSeleccionada, setPymeSeleccionada] = useState(null);
@@ -24,14 +29,14 @@ export default function App() {
   const obtenerPymes = async () => {
     obtenerAtributosColeccion();
     try {
-      const querySnapshot = await getDocs(collection(ikam, 'pyme'));
-      const pymesArray = querySnapshot.docs.map(doc => ({
+      const querySnapshot = await getDocs(collection(ikam, "pyme"));
+      const pymesArray = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
       setPymes(pymesArray);
     } catch (error) {
-      console.error('Error fetching pymes:', error);
+      console.error("Error fetching pymes:", error);
     }
   };
 
@@ -40,11 +45,11 @@ export default function App() {
       const user = auth.currentUser;
       if (!user) return; // Ensure the user is authenticated
 
-      const likesCollection = collection(ikam, 'likes');
+      const likesCollection = collection(ikam, "likes");
       const unsubscribe = onSnapshot(likesCollection, (querySnapshot) => {
         const pymesLikesArray = querySnapshot.docs
-          .filter(doc => doc.data().userId === user.uid) // Filter likes for the current user
-          .map(doc => doc.data().pymeId); // Assuming each like document contains the pymeId
+          .filter((doc) => doc.data().userId === user.uid) // Filter likes for the current user
+          .map((doc) => doc.data().pymeId); // Assuming each like document contains the pymeId
 
         setPymesLikes(pymesLikesArray);
       });
@@ -52,7 +57,7 @@ export default function App() {
       // Cleanup subscription on unmount
       return () => unsubscribe();
     } catch (error) {
-      console.error('Error fetching likes:', error);
+      console.error("Error fetching likes:", error);
     }
   };
 
@@ -63,11 +68,10 @@ export default function App() {
 
   useEffect(() => {
     if (pymes.length > 0 && pymesLikes.length > 0) {
-      const likedPymes = pymes.filter(pyme => pymesLikes.includes(pyme.id));
+      const likedPymes = pymes.filter((pyme) => pymesLikes.includes(pyme.id));
       setPymesQ(likedPymes);
     }
   }, [pymes, pymesLikes]);
-
 
   const obtenerAtributosColeccion = async () => {
     try {
@@ -94,14 +98,11 @@ export default function App() {
     const docRef = doc(ikam, "pyme", pymeId);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-        return docSnap.data();
+      return docSnap.data();
     } else {
-        return null;
+      return null;
     }
-};
-
-
-
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -113,9 +114,8 @@ export default function App() {
       </View>
       <ScrollView style={styles.contenedor}>
         <Text style={styles.textoFavoritos}>Favoritos</Text>
-        {pymesQ.length > 0 ?
+        {pymesQ.length > 0 ? (
           <View>
-
             <View style={styles.contenedorPymes}>
               <ListaPymes
                 setPymeSeleccionada={setPymeSeleccionada}
@@ -124,20 +124,16 @@ export default function App() {
               />
             </View>
           </View>
-          :
+        ) : (
           <View style={styles.contenedorNF}>
-            <Text style={styles.noEncontrado}>
-              ¡No tienes favoritos!
-            </Text>
-            <Text style={styles.noEncontrado}>
-              Añade algunos
-            </Text>
+            <Text style={styles.noEncontrado}>¡No tienes favoritos!</Text>
+            <Text style={styles.noEncontrado}>Añade algunos</Text>
             <Image
               source={require("../../assets/img/abuNotFound.png")}
               style={[styles.notfoundImg]}
             />
           </View>
-        }
+        )}
         <VistaDetallesPymeMod
           pymeId={pymeSeleccionada}
           volver={() => setVistaDetalles(false)}
@@ -145,7 +141,6 @@ export default function App() {
           vistaDetalles={vistaDetalles}
           setVistaDetalles={setVistaDetalles}
         />
-
       </ScrollView>
     </SafeAreaView>
   );
@@ -176,7 +171,7 @@ const styles = StyleSheet.create({
     marginVertical: 15,
     fontSize: 35,
     fontWeight: "bold",
-    textAlign: 'center'
+    textAlign: "center",
   },
   contenedorPymes: {
     flex: 1,
@@ -197,7 +192,6 @@ const styles = StyleSheet.create({
   noEncontrado: {
     textAlign: "center",
     fontSize: 30,
-    marginVertical: 10
-
-  }
+    marginVertical: 10,
+  },
 });
