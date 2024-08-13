@@ -9,177 +9,68 @@ import {
   Alert,
   Text,
 } from "react-native";
-import { getFirestore, collection, getDocs, doc, getDoc } from "firebase/firestore";
-import VistaDetallesPyme from '../../components/DetallesPyme';
-import VistaDetallesPymeMod from '../../components/DetallesPymeModal';
-import BarraBusqueda from '../../components/barraBusqueda';
-import ListaCategorias from '../../components/categorias';
-import ModalFiltro from '../../components/modalFiltro';
-import { ikam } from "../../firebase/config-ikam";
-import ListaPymes from '../../components/pymes';
-import { app } from "../../firebase/config";
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  doc,
+  getDoc,
+  query,
+  where,
+} from "firebase/firestore";
+import ListaCategorias from "../../components/categorias";
+import ListaPymes from "../../components/pymes"; // Importa el componente ListaPymes
+import VistaDetallesPymeMod from "../../components/DetallesPymeModal"; // Importa el componente ListaPymes
+import { app } from "../../firebase/config-ikam";
 
-const { width } = Dimensions.get("window");
 const db = getFirestore(app);
 
 const App = () => {
-    // Hooks
-    const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
-    const [pymeSeleccionada, setPymeSeleccionada] = useState(null);
-    const [categoriasElegir, setCategoriasElegir] = useState([]);
-    const [vistaDetalles, setVistaDetalles] = useState(false);
-    const [busquedaPyme, setbusquedaPyme] = useState(String);
-    // const [modalVisiblePy, setModalVisiblePy] = useState(false)
-    const [modalVisible, setModalVisible] = useState(false)
-    const [refreshing, setRefreshing] = useState(false);
-    const [categorias, setCategorias] = useState([]);
-    const [colonia, setColonia] = useState(String);
-    const [pymesCol, setPymesCol] = useState([]);
-    const [pymesQ, setPymesQ] = useState([]);
-    const [pymes, setPymes] = useState([]);
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
+  const [categorias, setCategorias] = useState([]);
+  const [pymes, setPymes] = useState([]);
+  const [pymeSeleccionada, setPymeSeleccionada] = useState(null);
+  const [vistaDetalles, setVistaDetalles] = useState(false);
 
-    // Funciones y useEfect  
+  const obtenerCategorias = useCallback(async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "categoria"));
+      const categoriasArray = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setCategorias(categoriasArray);
+    } catch (error) {
+      console.error("Error obteniendo las categorías:", error);
+    }
+  }, []);
 
-    // Conexion con la base de datos (Pymes)
-    // Conexion con la base de datos (Categoria)
-    // const obtenerCategorias = async () => {
-    //   const querySnapshot = await getDocs(collection(db, "categorias"));
-    //   const categoriasArray = querySnapshot.docs.map((doc) => ({
-    //     id: doc.id,
-    //     ...doc.data(),
-    //   }));
-    //   setCategorias(categoriasArray);
-    // };
+  const obtenerPymesPorCategoria = useCallback(async (nombreCategoria) => {
+    try {
+      const q = query(
+        collection(db, "pyme"),
+        where("nombreCategoria", "==", nombreCategoria)
+      );
+      const querySnapshot = await getDocs(q);
+      const pymesArray = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setPymes(pymesArray);
+    } catch (error) {
+      console.error("Error obteniendo las pymes:", error);
+    }
+  }, []);
 
-    useFocusEffect(
-        React.useCallback(() => {
-            const onBackPress = () => {
-                if (vistaDetalles) {
-                    setVistaDetalles(false);
-                    return true; // Previene la acción por defecto
-                }
-
-                Alert.alert(
-                    'Salir',
-                    '¿Estás seguro que quieres salir?',
-                    [
-                        { text: 'No', onPress: () => null, style: 'cancel' },
-                        { text: 'Sí', onPress: () => BackHandler.exitApp() },
-                    ],
-                    { cancelable: false }
-                );
-
-                return true; // Previene la acción por defecto
-            };
-
-            BackHandler.addEventListener('hardwareBackPress', onBackPress);
-
-            return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
-        }, [vistaDetalles])
-    );
-
-    const obtenerAtributosColeccion = async () => {
-        try {
-            const querySnapshot = await getDocs(collection(ikam, "pyme"));
-            const atributos = new Set();
-
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
-                Object.keys(data).forEach((key) => {
-                    atributos.add(key);
-                });
-            });
-
-            console.log("Atributos de la colección 'pyme':", Array.from(atributos));
-        } catch (error) {
-            console.error(
-                "Error obteniendo los atributos de la colección 'pyme':",
-                error
-            );
-        }
-    };
-
-    const obtenerPymes = async () => {
-        obtenerAtributosColeccion();
-        const querySnapshot = await getDocs(collection(ikam, "pyme"));
-        const pymesArray = querySnapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-        }));
-        setPymes(pymesArray);
-    };
-
-    useEffect(() => {
-        // obtenerCategorias();
-        setColonia('');
-        obtenerPymes();
-    }, []);
-
-    useEffect(() => {
-        const pyme = pymes.filter(p =>
-            p.nomColonia && typeof p.nomColonia === 'string' && p.nomColonia.includes(colonia)
-        );
-        setPymesCol(pyme)
-    }, [pymes]);
-
-    useEffect(() => {
-        setPymesQ(pymesCol)
-    }, [pymesCol]);
-
-    const onRefresh = useCallback(async () => {
-        setRefreshing(true);
-        // await obtenerCategorias();
-        await obtenerPymes();
-        setRefreshing(false);
-        setbusquedaPyme("");
-    }, []);
-
-    useEffect(() => {
-        if (!colonia) {
-            setPymesCol(pymes)
-            setPymesQ(pymes);
-        }
-        if (colonia) {
-            const pyme = pymes.filter(p =>
-                p.nomColonia && typeof p.nomColonia === 'string' && p.nomColonia.includes(colonia)
-            );
-            setPymesCol(pyme)
-            setPymesQ(pyme)
-        }
-    }, [colonia])
-
-    useEffect(() => {
-        if (!busquedaPyme) {
-            setPymesQ(pymesCol);
-        }
-
-        if (busquedaPyme) {
-            const pyme = pymesCol.filter(p =>
-                p.nombre_pyme.toLowerCase().includes(busquedaPyme.toLowerCase())
-            );
-            setPymesQ(pyme);
-        }
-    }, [busquedaPyme])
-
-    useEffect(() => {
-        if (categoriasElegir) {
-            const pyme = pymesCol.filter(p =>
-                // p.nombre_pyme.toLowerCase().includes(busquedaPyme.toLowerCase())
-                p.nombreSubcate && typeof p.nombreSubcate === 'string' && p.nombreSubcate.includes(categoriasElegir)
-            );
-            setPymesQ(pyme);
-        }
-    }, [categoriasElegir])
-
-    const obtenerDetallesPyme = async (pymeId) => {
-        const docRef = doc(ikam, "pyme", pymeId);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-            return docSnap.data();
-        } else {
-            return null;
-        }
-    };
+  const obtenerDetallesPyme = async (pymeId) => {
+    const docRef = doc(db, "pyme", pymeId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return docSnap.data();
+    } else {
+      return null;
+    }
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -223,75 +114,49 @@ const App = () => {
     }
   }, [categoriaSeleccionada, categorias, obtenerPymesPorCategoria]);
 
-    return (
-        <SafeAreaView style={estilos.areaSegura}>
-            <View style={estilos.cabecera}>
-                <Image
-                    source={require("../../assets/img/logo1.png")}
-                    style={estilos.logo}
-                />
-            </View>
-            <BarraBusqueda
-                busquedaPyme={busquedaPyme}
-                setbusquedaPyme={setbusquedaPyme}
-                setModalVisible={setModalVisible}
+  return (
+    <SafeAreaView style={estilos.areaSegura}>
+      <View style={estilos.cabecera}>
+        <Image
+          source={require("../../assets/img/logo1.png")}
+          style={estilos.logo}
+        />
+      </View>
+
+      {categoriaSeleccionada ? (
+        <View style={estilos.contenedorPymes}>
+          {pymes.length > 0 ? (
+            <ListaPymes
+              setPymeSeleccionada={setPymeSeleccionada}
+              pymesQ={pymes}
+              setVistaDetalles={setVistaDetalles}
             />
-            <ScrollView
-                refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                }
-            >
-                <View style={estilos.contenedorCategorias}>
-                    <ListaCategorias
-                        setCategoriaSeleccionada={setCategoriaSeleccionada}
-                        pymesQ={pymesQ}
-                        categoriaSeleccionada={categoriaSeleccionada}
-                        pymesCol={pymesCol}
-                        setCategoriasElegir={setCategoriasElegir} />
-                </View>
-                {pymesQ.length > 0 ?
-                    <View>
-
-                        <View style={estilos.contenedorPymes}>
-                            <ListaPymes
-                                setPymeSeleccionada={setPymeSeleccionada}
-                                pymesQ={pymesQ}
-                                setVistaDetalles={setVistaDetalles}
-                            />
-                        </View>
-                    </View>
-                    :
-                    <View style={estilos.contenedorNF}>
-                        <Text style={estilos.noEncontrado}>
-                            ¡Lo sentimos!
-                        </Text>
-                        <Text style={estilos.noEncontrado}>
-                            Contenido no encontrado
-                        </Text>
-                        <Image
-                            source={require("../../assets/img/abuNotFound.png")}
-                            style={[estilos.notfoundImg]}
-                        />
-                    </View>
-
-                }
-                <ModalFiltro
-                    modalVisible={modalVisible}
-                    setModalVisible={setModalVisible}
-                    colonia={colonia}
-                    setColonia={setColonia}
-                />
-                <VistaDetallesPymeMod
-                    pymeId={pymeSeleccionada}
-                    volver={() => setVistaDetalles(false)}
-                    obtenerDetallesPyme={obtenerDetallesPyme}
-                    vistaDetalles={vistaDetalles}
-                    setVistaDetalles={setVistaDetalles}
-                />
-            </ScrollView>
-        </SafeAreaView>
-    );
-
+          ) : (
+            <View style={estilos.contenedorMensaje}>
+              <Text style={estilos.mensajeNoPymes}>
+                No hay pymes disponibles para esta categoría
+              </Text>
+            </View>
+          )}
+          <VistaDetallesPymeMod
+            pymeId={pymeSeleccionada}
+            volver={() => setVistaDetalles(false)}
+            obtenerDetallesPyme={obtenerDetallesPyme}
+            vistaDetalles={vistaDetalles}
+            setVistaDetalles={setVistaDetalles}
+          />
+        </View>
+      ) : (
+        <View style={estilos.contenedorCategorias}>
+          <ListaCategorias
+            setCategoriaSeleccionada={setCategoriaSeleccionada}
+            categorias={categorias}
+            categoriaSeleccionada={categoriaSeleccionada}
+          />
+        </View>
+      )}
+    </SafeAreaView>
+  );
 };
 
 const estilos = StyleSheet.create({

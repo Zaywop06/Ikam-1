@@ -105,8 +105,8 @@ export default function App() {
   };
 
   return (
-    <SafeAreaView style={styles.areaSegura}>
-      <View style={styles.cabecera}>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.header}>
         <Image
           source={require("../../assets/img/logo1.png")}
           style={styles.logo}
@@ -114,7 +114,7 @@ export default function App() {
       </View>
       <ScrollView style={styles.contenedor}>
         <Text style={styles.textoFavoritos}>Favoritos</Text>
-        {pymesQ.length > 0 ?
+        {pymesQ.length > 0 ? (
           <View>
             <View style={styles.contenedorPymes}>
               <ListaPymes
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     marginVertical: 15,
     fontSize: 35,
     fontWeight: "bold",
-    textAlign: 'center'
+    textAlign: "center",
   },
   contenedorPymes: {
     flex: 1,
@@ -192,7 +192,6 @@ const styles = StyleSheet.create({
   noEncontrado: {
     textAlign: "center",
     fontSize: 30,
-    marginVertical: 10
-
-  }
+    marginVertical: 10,
+  },
 });
