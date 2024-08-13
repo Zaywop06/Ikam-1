@@ -1,4 +1,8 @@
+import { AntDesign, Entypo } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
+
 import {
   StyleSheet,
   SafeAreaView,
@@ -8,16 +12,14 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
-  Alert
+  Alert,
+  Dimensions
 } from 'react-native';
-import Logo from '../assets/img/logo_ikam.png';
-import { AntDesign, Entypo } from '@expo/vector-icons';
-import { Link, useRouter } from 'expo-router';
-import { auth, ikam } from '../firebase/config-ikam';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { collection, doc, setDoc } from 'firebase/firestore';
+
+const { width, height } = Dimensions.get('window');
+
 import { registerUser } from "../auth/authRegister";
-import { FontAwesome5 } from '@expo/vector-icons';
+import Logo from '../assets/img/logo_ikam.png';
 
 const RegisterScreen = () => {
   const [form, setForm] = useState({
@@ -163,9 +165,7 @@ const RegisterScreen = () => {
                 }}
               />
             </View>
-
-            <Text style={styles.formLink}>Registrarse con número telefónico</Text>
-
+            {/* <Text style={styles.formLink}>Registrarse con número telefónico</Text> */}
             <View style={styles.formAction}>
               <TouchableOpacity onPress={handleRegister}>
                 <View style={styles.btnContain}>
@@ -176,7 +176,7 @@ const RegisterScreen = () => {
               </TouchableOpacity>
             </View>
 
-            <Text style={styles.subtitle2}>O también</Text>
+            {/* <Text style={styles.subtitle2}>O también</Text>
 
             <View style={styles.signInButtons}>
               <TouchableOpacity style={styles.signInBtn}>
@@ -188,7 +188,7 @@ const RegisterScreen = () => {
               <TouchableOpacity style={styles.signInBtn}>
                 <Entypo name='circle' size={40} />
               </TouchableOpacity>
-            </View>
+            </View> */}
 
             <Text style={styles.label}>
               ¿Ya tienes una cuenta? <Link href={'LoginScreen'} style={styles.labelLink}>Inicia en IKAM</Link>
@@ -202,7 +202,7 @@ const RegisterScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 30,
+    paddingVertical: 0,
     paddingHorizontal: 20,
     flexGrow: 1,
     flexShrink: 1,
@@ -210,6 +210,7 @@ const styles = StyleSheet.create({
   },
   label: {
     textAlign: 'center',
+    fontSize: 20
   },
   labelLink: {
     textAlign: 'center',
@@ -227,21 +228,23 @@ const styles = StyleSheet.create({
     color: '#929292',
   },
   subtitle2: {
-    fontSize: 15,
-    fontWeight: 'black',
+    fontSize: 20,
+    fontWeight: '900',
     color: '#1D2A32',
-    alignSelf: 'center',
-    marginBottom: 10,
+    textAlign: 'center',
+    marginBottom: 0,
   },
   header: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 36,
+    marginTop: 30,
   },
   logo: {
     alignSelf: 'center',
-    width: 300,
-    height: 150,
+    width: width * 0.8,
+    height: height * 0.2,
+    marginBottom: -25,
+    marginTop: 50
   },
   form: {
     marginBottom: 24,
@@ -286,6 +289,7 @@ const styles = StyleSheet.create({
   },
   btnContain: {
     alignItems: 'center',
+    marginTop: 1,
   },
   btn: {
     flexDirection: 'row',
@@ -296,7 +300,8 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     backgroundColor: '#C61919',
     borderColor: '#222C57',
-    width: "40%",
+    width: width * 0.8,
+    marginBottom: 15
   },
   btnText: {
     fontSize: 15,

@@ -1,15 +1,13 @@
-import React from 'react';
-import { View, Text, SafeAreaView, Pressable, Image, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, SafeAreaView, Pressable, Image, StyleSheet, Dimensions, PermissionsAndroid } from 'react-native';
 import { useRouter } from 'expo-router';
-import colorsIkam from '../assets/estilos';
 import { useFonts } from 'expo-font';
+import React from 'react';
+
+import colorsIkam from '../assets/estilos';
 
 const { width, height } = Dimensions.get('window');
 
 const WelcomeScreen = () => {
-  const handleLogin = () => {
-    // Implement login logic here    
-  };
 
   const [fontsLoaded] = useFonts({
     Space: require('../assets/fonts/SpaceMono-Regular.ttf'),
@@ -41,12 +39,12 @@ const WelcomeScreen = () => {
       </View>
       <View style={estilos.contenedorBtn}>
         <Pressable
-          title="Login"
+          // title="Login"
           style={estilos.btn}
           onPress={() => ruta.push('/LoginScreen')}
         >
           <Text style={estilos.btnText}>Comienza YA</Text>
-        </Pressable>        
+        </Pressable>
       </View>
     </SafeAreaView>
   );
